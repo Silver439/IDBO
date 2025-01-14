@@ -1,5 +1,4 @@
 import torch
-import math
 import botorch
 from botorch.acquisition.analytic import AnalyticAcquisitionFunction
 from botorch.acquisition.objective import PosteriorTransform
@@ -57,9 +56,8 @@ class AugmentedExpectedImprovement(AnalyticAcquisitionFunction):
             given design points `X`.
         """
         mean, sigma = self._mean_and_sigma(X)
-        self.best_f = self.best_f + sigma
         u = _scaled_improvement(mean, sigma, self.best_f, self.maximize)
-        return sigma * _ei_helper(u) * (1 - 0.5/(math.sqrt(sigma*sigma+0.25)))
+        return sigma * _ei_helper(u) * (1 - 0.5/(torch.sqrt(sigma*sigma+0.25)))
     
 
 def _scaled_improvement(
